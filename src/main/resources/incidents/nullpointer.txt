@@ -1,0 +1,11 @@
+Incident: NullPointerException in PaymentService
+
+Symptoms:
+NullPointerException thrown
+Order processing failed
+
+Root Cause:
+Null value returned from database.
+
+Resolution:
+Add null checks before using response.

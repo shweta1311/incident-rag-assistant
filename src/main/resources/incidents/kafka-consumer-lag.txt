@@ -1,0 +1,11 @@
+Incident: Kafka Consumer Lag
+
+Symptoms:
+Consumer lag increasing
+Message backlog
+
+Root Cause:
+Consumers are processing slower than producers.
+
+Resolution:
+Increase consumer instances or optimize message processing.
