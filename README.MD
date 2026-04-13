@@ -38,3 +38,55 @@ We need a class to store:
 text
 
 vector
+
+
+=====================
+
+upgraded:
+Your pipeline should execute this sequence:
+
+Controller
+↓
+RagService
+↓
+EmbeddingService
+↓
+RetrieverService
+↓
+VectorStore
+↓
+ContextBuilderService
+↓
+GeminiClient
+↓
+Response
+
+If everything is wired correctly you should receive a response like:
+
+{
+"rootCause": "NullPointerException in PaymentService",
+"suggestion": "Check for null payment response before accessing object",
+"sources": [
+"payment-service.log"
+]
+}
+
+===========
+
+1️⃣ The Correct Place to Create Gemini API Keys
+
+Do NOT create the key from the generic API list page.
+
+Instead go here:
+
+👉 https://aistudio.google.com/app/apikey
+
+This is Google AI Studio, the official place to generate Gemini API keys for developers.
+
+2️⃣ Generate the Key
+
+On that page:
+
+Click Create API Key
+Select your Google Cloud project
+Copy the key
