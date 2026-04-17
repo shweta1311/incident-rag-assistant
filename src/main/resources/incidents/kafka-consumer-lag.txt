@@ -1,11 +1,21 @@
 Incident: Kafka Consumer Lag
 
 Symptoms:
-Consumer lag increasing
-Message backlog
+- Consumer lag increasing
+- Message backlog
+- Delayed processing of Kafka messages
 
 Root Cause:
-Consumers are processing slower than producers.
+Kafka consumers are processing messages slower than producers, causing lag to increase. This can occur due to:
+- Slow processing logic in the consumer application
+- Insufficient number of consumer instances
+- Resource bottlenecks (CPU, memory, network)
+- Large message size or batch size
+- Unhandled exceptions causing consumer restarts
 
 Resolution:
-Increase consumer instances or optimize message processing.
+- Scale up consumer instances to match producer throughput
+- Optimize message processing logic for efficiency
+- Monitor consumer lag metrics and set up alerts
+- Tune batch size and processing parameters
+- Implement robust error handling to avoid consumer crashes

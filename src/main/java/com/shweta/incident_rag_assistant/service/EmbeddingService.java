@@ -7,8 +7,9 @@ import org.springframework.web.client.RestTemplate;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class EmbeddingService {
@@ -19,18 +20,43 @@ public class EmbeddingService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // Fake embedding generator (for learning)
-    public List<Double> generateEmbedding(String text) {
+    private Set<String> vocabulary = new HashSet<>();
+    private List<String> vocabList = new ArrayList<>();
+    private static final Pattern WORD_PATTERN = Pattern.compile("\\w+");
 
-        List<Double> vector = new ArrayList<>();
-
-        int hash = text.hashCode();
-
-        for (int i = 0; i < 10; i++) {
-            vector.add((double) (hash % (i + 5)) / 100);
+    /**
+     * Call this before embedding any text: builds the vocabulary from all texts (docs + question).
+     */
+    public void buildVocabulary(List<String> texts) {
+        Set<String> vocab = new HashSet<>();
+        for (String text : texts) {
+            Matcher matcher = WORD_PATTERN.matcher(text.toLowerCase());
+            while (matcher.find()) {
+                vocab.add(matcher.group());
+            }
         }
+        this.vocabulary = vocab;
+        this.vocabList = new ArrayList<>(vocab);
+        Collections.sort(this.vocabList);
+    }
 
-        return vector;
+    /**
+     * Returns a bag-of-words vector for the given text, using the current vocabulary.
+     */
+    public List<Double> generateEmbedding(String text) {
+        double[] vec = new double[vocabList.size()];
+        Map<String, Integer> counts = new HashMap<>();
+        Matcher matcher = WORD_PATTERN.matcher(text.toLowerCase());
+        while (matcher.find()) {
+            String word = matcher.group();
+            counts.put(word, counts.getOrDefault(word, 0) + 1);
+        }
+        for (int i = 0; i < vocabList.size(); i++) {
+            vec[i] = counts.getOrDefault(vocabList.get(i), 0);
+        }
+        List<Double> result = new ArrayList<>();
+        for (double v : vec) result.add(v);
+        return result;
     }
 
     // below is embeding gemini api not supoorted to my apikey
@@ -80,5 +106,3 @@ public class EmbeddingService {
         }
     }
 }
-
-

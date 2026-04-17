@@ -21,7 +21,11 @@ public class RetrieverService {
      */
     public List<DocumentEmbedding> retrieveTopK(List<Double> queryEmbedding, int k, double threshold) {
         return vectorStore.getAll().stream()
-                .map(doc -> new ScoredEmbedding(doc, cosineSimilarity(queryEmbedding, doc.getEmbedding())))
+                .map(doc -> {
+                    double score = cosineSimilarity(queryEmbedding, doc.getEmbedding());
+                    System.out.printf("[RETRIEVER DEBUG] Source: %s | Similarity: %.4f\n", doc.getSource(), score);
+                    return new ScoredEmbedding(doc, score);
+                })
                 .filter(se -> se.score() >= threshold)
                 .sorted(Comparator.comparingDouble(ScoredEmbedding::score).reversed())
                 .limit(k)
